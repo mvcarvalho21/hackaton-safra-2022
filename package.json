@@ -1,0 +1,19 @@
+{
+  "name": "safra",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "mocks": "mocks-server"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^6.1.1",
+    "@mocks-server/main": "^2.6.3"
+  },
+  "dependencies": {
+    "faker-br": "^0.4.1"
+  }
+}
