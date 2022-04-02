@@ -12,7 +12,7 @@ module.exports = {
     // path: "mocks",
 
     // files watch enabled
-    watch: true,
+    //watch: true,
 
     // server delay
     delay: 0,

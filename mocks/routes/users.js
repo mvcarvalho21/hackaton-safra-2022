@@ -4,7 +4,7 @@
 
 // users data
 
-const {generateContrato,generateBalances,generatePf,generateQualifications,generateCsv} = require("../../module/functions.js")
+const {generateContrato, generateBalances, generatePf, generateQualifications, generateCsv, generateFullCsv, generateCustomCsv} = require("../../module/functions.js")
 
 module.exports = [
   {
@@ -112,6 +112,58 @@ module.exports = [
           const quant = req.params.id;
           res.status(200);
           const response = await generateCsv(quant)
+          res.send(response);
+        },
+      },
+      {
+        id: "error", // id of the variant
+        response: {
+          status: 400, // status to send
+          body: {
+            // body to send
+            message: "Error",
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: "generateFullCsv", // id of the route
+    url: "/genfullcsv/:id", // url in express format
+    method: "GET", // HTTP method
+    variants: [
+      {
+        id: "success", // id of the variant
+        response: async (req, res) => {
+          const quant = req.params.id;
+          res.status(200);
+          const response = await generateFullCsv(quant)
+          res.send(response);
+        },
+      },
+      {
+        id: "error", // id of the variant
+        response: {
+          status: 400, // status to send
+          body: {
+            // body to send
+            message: "Error",
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: "generateCustomCsv", // id of the route
+    url: "/gencustomcsv/:id", // url in express format
+    method: "GET", // HTTP method
+    variants: [
+      {
+        id: "success", // id of the variant
+        response: async (req, res) => {
+          const quant = req.params.id;
+          res.status(200);
+          const response = await generateCustomCsv(quant)
           res.send(response);
         },
       },
