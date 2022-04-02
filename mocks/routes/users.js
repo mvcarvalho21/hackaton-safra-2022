@@ -1,9 +1,6 @@
-// Use this file only as a guide for first steps. Delete it when you have added your own routes files.
-// For a detailed explanation regarding each routes property, visit:
-// https://mocks-server.org/docs/get-started-routes
-
-// users data
-
+/**
+ * Import functions
+ */
 const {generateContrato, generateBalances, generatePf, generateQualifications, generateCsv, generateFullCsv, generateCustomCsv} = require("../../module/functions.js")
 
 module.exports = [

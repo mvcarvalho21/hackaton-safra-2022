@@ -3,6 +3,9 @@ const fakerBr = require('faker-br');
 const fs = require('fs');
 const { values } = require('../mocks/routes/users');
 
+/**
+ * Lists of default values
+ */
 const {
   maritalStatusCode,
   alphabet,
@@ -23,7 +26,13 @@ const {
   taxType,
   occupationCodes,
   frequencies } = require('./consts');
-  
+
+/**
+ * Generate a contract data object based on the id
+ * 
+ * @param {int} id - Seed to generate the contract
+ * @returns JSON
+ */
 async function generateContrato(id) {
   /**
    * Generate each contract based on the id, if the id is the same, return the
@@ -46,6 +55,9 @@ async function generateContrato(id) {
     feeRateTmp = faker.datatype.number({ min: 0, max: 1, precision: 0.0001 });
   }
 
+  /**
+   * Generate dates based on rules
+   */
   let contractDate = faker.date.between('2018-01-01', '2022-01-01').toISOString().substring(0, 10);
 
   let disbursementDate = faker.date.between(contractDate, '2028-01-01').toISOString().substring(0, 10);
@@ -56,6 +68,10 @@ async function generateContrato(id) {
 
   var contractAmount = faker.datatype.number({ min: 0, max: 1, precision: 0.01 });
 
+  /**
+   * 80% of the time the contract amount will be between 1000 and 300000
+   * 20% of the time the contract amount will be between 300000 and 1000000
+   */
   if (contractAmount < 0.8) {
     contractAmount = faker.datatype.number({ min: 1000, max: 300000, precision: 0.0001 });
   } else {
@@ -118,9 +134,15 @@ async function generateContrato(id) {
   ];
 }
 
+/**
+ * Generate a "Pessoa física" data object based on the id
+ * 
+ * @param {int} id - Seed to generate the "Pessoa física"
+ * @returns JSON
+ */
 async function generatePf(id) {
   /**
-   * Generate each contract based on the id, if the id is the same, return the
+   * Generate each PF based on the id, if the id is the same, return the
    * same values
    */
   faker.seed(parseInt(id));
@@ -139,12 +161,18 @@ async function generatePf(id) {
   feeAmountTmp = faker.datatype.number({ min: 10000, max: 99999999, precision: 0.01 });
   feeRateTmp = faker.datatype.number({ min: 0, max: 1, precision: 0.0001 });
 
+  /**
+   * 95% of the time it will be a good payee
+   */
   if (feeRateTmp < 0.95) {
     goodPayeeTmp = 1;
   }
 
   var isEmpregado = faker.datatype.number({ min: 0, max: 1, precision: 0.0001 });
 
+  /**
+   * 96% of the time it will be employed
+   */
   if (isEmpregado < 0.96) {
     isEmpregado = 1;
   } else {
@@ -153,6 +181,10 @@ async function generatePf(id) {
 
   var numDependentes = faker.datatype.number({ min: 0, max: 1, precision: 0.0001 });
 
+  /**
+   * 80% of the time it will have between 0 and 2 dependents,
+   * 20% of the time it will have between 3 and 5 dependents
+   */
   if (numDependentes < 0.8) {
     numDependentes = faker.datatype.number({ min: 0, max: 2 });
   } else {
@@ -175,9 +207,15 @@ async function generatePf(id) {
   ];
 }
 
+/**
+ * Generate a balance data object based on the id
+ * 
+ * @param {int} id - Seed to generate the balance
+ * @returns JSON
+ */
 async function generateBalances(id) {
   /**
-   * Generate each contract based on the id, if the id is the same, return the
+   * Generate each balance based on the id, if the id is the same, return the
    * same values
    */
   faker.seed(parseInt(id));
@@ -196,6 +234,12 @@ async function generateBalances(id) {
   ];
 }
 
+/**
+ * Generate a qualification data object based on the id
+ * 
+ * @param {int} id - Seed to generate the qualification
+ * @returns JSON
+ */
 async function generateQualifications(id) {
   /**
    * Generate each qualification based on the id, if the id is the same, return the
@@ -203,6 +247,10 @@ async function generateQualifications(id) {
    */
   faker.seed(parseInt(id));
 
+  /**
+   * Generate income, 90% of it will be between 0 and 5000, 
+   * and 10% will be between 5000 and 100000
+   */
   var income = faker.datatype.number({ min: 0, max: 1, precision: 0.0001 });
 
   if (income < 0.9) {
@@ -211,6 +259,11 @@ async function generateQualifications(id) {
     income = faker.datatype.number({ min: 5000, max: 100000, precision: 0.0001 });
   }
 
+  /**
+   * Generate patrimony, 80% of it will be between 0 and 500000, 
+   * 15% will be between 500000 and 1000000
+   * and 5% will be between 1000000 and 10000000
+   */
   var patrimony = faker.datatype.number({ min: 0, max: 1, precision: 0.0001 });
 
   if (patrimony < 0.8) {
@@ -244,6 +297,11 @@ async function generateQualifications(id) {
   ];
 }
   
+/**
+ * Generate a CSV with basic information
+ * 
+ * @param {int} quant - Number of lines to generate
+ */
 async function generateCsv(quant) {
   /**
    * Id	-> id
@@ -260,42 +318,60 @@ async function generateCsv(quant) {
    * numero_dependentes	
    * Bom_mal_pagador -> pf/bomPagador
    */
-  var csv = "Id;status_civil;sexo;data_nascimento;saldo conta_corrente;valor_financiamento;patrimonio;ocupação;tempo_emprego_atual;salario;tipo_de_moradia;numero_dependentes;Bom_mal_pagador\n";
+  /**
+   * CSV headers
+   */
+  var csv = "Id;status_civil;sexo;data_nascimento;saldo conta_corrente;valor_financiamento;patrimonio;ocupação;"+
+  "tempo_emprego_atual;salario;tipo_de_moradia;numero_dependentes;Bom_mal_pagador\n";
+
+  /**
+   * Generate the quant amount of lines
+   */
   for (var i = 0; i < quant; i++) {
     var id = i;
     var pf = await generatePf(id);
     var qualification = await generateQualifications(id);
     var balances = await generateBalances(id);
     var contract = await generateContract(id);
-    // convert string to json object
+    
+    /**
+     * Convert string to json object 
+     */
     var pfJson = JSON.parse(JSON.stringify(pf))[0];
     var qualificationJson = JSON.parse(JSON.stringify(qualification))[0];
     var balancesJson = JSON.parse(JSON.stringify(balances))[0];
     var contractJson = JSON.parse(JSON.stringify(contract))[0];
 
+    /**
+     * Append line to csv
+     */
     csv += id + ";" + pfJson.data.maritalStatusCode + ";" + pfJson.data.sex + ";" + pfJson.data.birthDate + ";" 
     + balancesJson.data.availableAmount + ";" + contractJson.data.contractAmount + ";" + qualificationJson.data.informedPatrimony.amount
     + ";" + ";" + ";" + qualificationJson.data.informedIncome.amount + ";" + ";" + ";" + pfJson.data.bomPagador + "\n";
   }
   
+  /**
+   * Write to file
+   */
   fs.writeFile('output.csv', csv, err => {
     if (err) {
       console.error(err)
       return
     }
-    //file written successfully
+    // File written successfully
   });
 }
 
-// This function handles arrays and objects
+/**
+ * Returns values of the JSON object
+ * 
+ * @param {JSON} obj  - JSON object
+ * 
+ * @returns 
+ */
 function eachRecursive(obj)
 {
   var values = [];
-  //console.log(obj)
-
-  /*for (var key in obj) {
-    values.push(obj[key]);
-  }*/
 
   for (var k in obj) {
     if (typeof obj[k] === 'object') {
@@ -305,18 +381,17 @@ function eachRecursive(obj)
     }
   }
 
-  /*for (var k in obj) {
-      if (typeof obj[k] == "object" && obj[k] !== null)
-          eachRecursive(obj[k]);
-      else
-          values.push(obj[k]);
-  }*/
-
   return values;
 }
 
-function eachRecursiveKeys(obj)
-{
+/**
+ * Returns keys of the JSON object
+ * 
+ * @param {JSON} obj - JSON object
+ * 
+ * @returns 
+ */
+function eachRecursiveKeys(obj) {
   var values = [];
 
   for (var k in obj) {
@@ -330,29 +405,26 @@ function eachRecursiveKeys(obj)
   return values;
 }
 
+/**
+ * Generate a csv file with the given number of records, with all fields available
+ * 
+ * @param {int} quant - number of records to generate
+ */
 async function generateFullCsv(quant) {
-  /*var csv = "birthDate;maritalStatusCode;sex;creliq;ocupacao;numeroDependentes;idade;credAberto;updateDateTime;"+
-  "companyCnpj;occupationCode;occupationDescription;"+
-  "frequency;amount;currency;date;availableAmount;availableAmountCurrency;blockedAmount;blockedAmountCurrency;"+
-  "automaticallyInvestedAmount;automaticallyInvestedAmountCurrency;contractNumber;ipocCode;productName;productType;"+
-  "productSubType;contractDate;disbursementDate;settlementDate;contractAmount;currency;dueDate;instalmentPeriodicity;"+
-  "instalmentPeriodicityAdditionalInfo;firstInstalmentDueDate;CET;amortizationScheduled;amortizationScheduledAdditionalInfo;"+
-  "taxType;interestRateType;taxPeriodicity;calculation;referentialRateIndexerType;referentialRateIndexerSubType;"+
-  "referentialRateIndexerAdditionalInfo;preFixedRate;postFixedRate;additionalInfo;feeName;feeCode;feeChargeType;"+
-  "feeCharge;feeAmount;feeRate;chargeType;chargeAdditionalInfo;chargeRate\n";*/
   
   csv = "";
 
   /**
    * Generate keys
    */
-
   var pf = await generatePf(0);
   var qualification = await generateQualifications(0);
   var balances = await generateBalances(0);
   var contract = await generateContrato(0);
   
-  // convert string to json object
+  /**
+   * Convert string to json object
+   */
   var pfJson = JSON.parse(JSON.stringify(pf))[0].data;
   var qualificationJson = JSON.parse(JSON.stringify(qualification))[0].data;
   var balancesJson = JSON.parse(JSON.stringify(balances))[0].data;
@@ -362,6 +434,9 @@ async function generateFullCsv(quant) {
   var balancesJsonKeys = eachRecursiveKeys(balancesJson);
   var contractJsonKeys = eachRecursiveKeys(contractJson);
   
+  /**
+   * Append to CSV
+   */
   for (val in pfJsonKeys) {
     csv += pfJsonKeys[val] + ";";
   }
@@ -386,7 +461,9 @@ async function generateFullCsv(quant) {
     var balances = await generateBalances(id);
     var contract = await generateContrato(id);
     
-    // convert string to json object
+    /**
+     * Convert string to json object
+     */ 
     var pfJson = JSON.parse(JSON.stringify(pf))[0].data;
     var qualificationJson = JSON.parse(JSON.stringify(qualification))[0].data;
     var balancesJson = JSON.parse(JSON.stringify(balances))[0].data;
@@ -397,6 +474,9 @@ async function generateFullCsv(quant) {
     var balancesJsonValues = eachRecursive(balancesJson);
     var contractJsonValues = eachRecursive(contractJson);   
     
+    /**
+     * Append to CSV
+     */
     for (val in pfJsonValues) {
         csv += pfJsonValues[val] + ";";
     }
@@ -412,19 +492,27 @@ async function generateFullCsv(quant) {
     for (val in contractJsonValues) {
         csv += contractJsonValues[val] + ";";
     }
-    
+
     csv += "\n";
   }
 
+  /**
+   * Write to file
+   */
   fs.writeFile('outputFull.csv', csv, err => {
     if (err) {
       console.error(err)
       return
     }
-    //file written successfully
+    // File written successfully
   });
 }
 
+/**
+ * Generate a custom csv file with the given number of records, with certain fields
+ * 
+ * @param {int} quant - number of records to generate
+ */
 async function generateCustomCsv(quant) {
   /**
    * Id -> id
@@ -438,8 +526,15 @@ async function generateCustomCsv(quant) {
    * valor_financ -> contract/contractAmount
    * cred_aberto -> pf/credAberto
    */
+
+  /**
+   * CSV header
+   */
   var csv = "Id;creliq;idade;status_civil;ocupacao;numero_dependentes;renda_mensal;valor_patrim;valor_financ;cred_aberto\n";
   
+  /**
+   * Generate quant records
+   */
   for (var i = 0; i < quant; i++) {
     var id = i;
     var pf = await generatePf(id);
@@ -447,26 +542,36 @@ async function generateCustomCsv(quant) {
     var contract = await generateContrato(id);
     var balances = await generateBalances(id);
 
-    // convert string to json object
+    /**
+     * Convert string to json object
+     */
     var pfJson = JSON.parse(JSON.stringify(pf))[0].data;
     var qualificationJson = JSON.parse(JSON.stringify(qualification))[0].data;
     var contractJson = JSON.parse(JSON.stringify(contract))[0].data;
 
+    /**
+     * Append to CSV
+     */
     csv += id + ";" + pfJson.creliq + ";" + pfJson.idade + ";" + pfJson.maritalStatusCode + ";" + pfJson.ocupacao 
     + ";" + pfJson.numeroDependentes + ";" + qualificationJson.informedIncome.amount + ";" 
     + qualificationJson.informedPatrimony.amount + ";" + contractJson.contractAmount + ";" + pfJson.credAberto + "\n";
   }
   
+  /**
+   * Write to file
+   */
   fs.writeFile('outputCustom.csv', csv, err => {
     if (err) {
       console.error(err)
       return
     }
-    //file written successfully
+    // File written successfully
   });
 }
   
-
+/**
+ * Export functions
+ */
 module.exports = {
   generateContrato: generateContrato,
   generateBalances: generateBalances,
