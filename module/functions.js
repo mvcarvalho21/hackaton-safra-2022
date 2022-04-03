@@ -568,6 +568,51 @@ async function generateCustomCsv(quant) {
     // File written successfully
   });
 }
+
+/**
+ * Return with custom fields
+ * 
+ * @param {int} id - id of the record
+ */
+ async function returnCustom(id) {
+  /**
+   * Generate record
+   */
+  var pf = await generatePf(id);
+  var qualification = await generateQualifications(id);
+  var contract = await generateContrato(id);
+  var balances = await generateBalances(id);
+
+  /**
+   * Convert string to json object
+   */
+  var pfJson = JSON.parse(JSON.stringify(pf))[0].data;
+  var qualificationJson = JSON.parse(JSON.stringify(qualification))[0].data;
+  var contractJson = JSON.parse(JSON.stringify(contract))[0].data;
+  var balancesJson = JSON.parse(JSON.stringify(balances))[0].data;
+  
+  var json = {
+      "data": {
+        "id": id,
+        "status_civil": pfJson.maritalStatusCode,
+        "sexo": pfJson.sex,
+        "data_nascimento": pfJson.birthDate,
+        "saldo_conta_corrente": balancesJson.availableAmount,
+        "valor_financiamento": contractJson.contractAmount,
+        "patrimonio": qualificationJson.informedPatrimony.amount,
+        "ocupacao": pfJson.ocupacao,
+        "tempo_emprego_atual": "",
+        "salario": qualificationJson.informedIncome.amount,
+        "tipo_de_moradia": "",
+        "numero_dependentes": pfJson.dependentes,
+        "Bom_mal_pagador": pfJson.bomPagador,
+        "creliq": pfJson.creliq,
+      }
+    }
+  ;
+
+  return json;
+}
   
 /**
  * Export functions
@@ -580,4 +625,5 @@ module.exports = {
   generateCsv: generateCsv,
   generateFullCsv: generateFullCsv,
   generateCustomCsv: generateCustomCsv,
+  returnCustom: returnCustom
 };

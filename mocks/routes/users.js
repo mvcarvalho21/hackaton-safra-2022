@@ -1,7 +1,7 @@
 /**
  * Import functions
  */
-const {generateContrato, generateBalances, generatePf, generateQualifications, generateCsv, generateFullCsv, generateCustomCsv} = require("../../module/functions.js")
+const {generateContrato, generateBalances, generatePf, generateQualifications, generateCsv, generateFullCsv, generateCustomCsv, returnCustom} = require("../../module/functions.js")
 
 module.exports = [
   {
@@ -161,6 +161,32 @@ module.exports = [
           const quant = req.params.id;
           res.status(200);
           const response = await generateCustomCsv(quant)
+          res.send(response);
+        },
+      },
+      {
+        id: "error", // id of the variant
+        response: {
+          status: 400, // status to send
+          body: {
+            // body to send
+            message: "Error",
+          },
+        },
+      },
+    ],
+  },
+  {
+    id: "returnCustom", // id of the route
+    url: "/returncustom/:id", // url in express format
+    method: "GET", // HTTP method
+    variants: [
+      {
+        id: "success", // id of the variant
+        response: async (req, res) => {
+          const id = req.params.id;
+          res.status(200);
+          const response = await returnCustom(id)
           res.send(response);
         },
       },
