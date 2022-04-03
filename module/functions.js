@@ -604,9 +604,11 @@ async function generateCustomCsv(quant) {
         "tempo_emprego_atual": "",
         "salario": qualificationJson.informedIncome.amount,
         "tipo_de_moradia": "",
-        "numero_dependentes": pfJson.dependentes,
+        "numero_dependentes": pfJson.numeroDependentes,
         "Bom_mal_pagador": pfJson.bomPagador,
         "creliq": pfJson.creliq,
+        "cred_aberto": pfJson.credAberto,
+        "idade": pfJson.idade,
       }
     }
   ;
