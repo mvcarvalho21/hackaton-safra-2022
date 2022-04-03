@@ -1,7 +1,7 @@
 [
   {
     "id": "base",
-    "routesVariants": ["add-headers:enabled", "contracts:success", "identifPessoaFisica:success", "balances:success", "qualifications:success", "generateCsv:success", "generateFullCsv:success", "generateCustomCsv:success", "returnCustom:success"]
+    "routesVariants": ["add-headers:enabled", "contracts:success", "identifPessoaFisica:success", "balances:success", "qualifications:success", "generateCsv:success", "generateFullCsv:success", "generateCustomCsv:success", "returnCustom:success", "returnEmail:success"]
   },
   {
     "id": "no-headers",

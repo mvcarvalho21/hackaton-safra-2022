@@ -615,6 +615,24 @@ async function generateCustomCsv(quant) {
 
   return json;
 }
+
+/**
+ * Return emails
+ * 
+ * @param {int} quant - number of records to generate
+ */
+ async function returnEmail(quant) {
+  
+  var json = []
+
+  for(var i = 0; i < quant; i++) {
+    var email = faker.internet.email()
+
+    json.push(email)
+  }
+
+  return json;
+}
   
 /**
  * Export functions
@@ -627,5 +645,6 @@ module.exports = {
   generateCsv: generateCsv,
   generateFullCsv: generateFullCsv,
   generateCustomCsv: generateCustomCsv,
-  returnCustom: returnCustom
+  returnCustom: returnCustom,
+  returnEmail: returnEmail
 };
